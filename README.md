@@ -24,7 +24,7 @@ Open <http://localhost:3000>.
 ## Build and verify
 
 ```sh
-npm test
+make check
 ```
 
 This creates the static site in `out/` and validates the homepage, archive, an imported article, RSS, robots, sitemap, redirect map, and removal of the old Sites starter.
@@ -49,9 +49,28 @@ The Nginx redirect map preserves every old `?p=123` post URL.
 ## Production image
 
 ```sh
-npm test
+make check
 docker build -t benincosa-armchair-notes .
 docker run --rm -p 8088:80 benincosa-armchair-notes
 ```
 
 The container serves the already-built static export and handles the legacy post-ID redirects. In production it listens only on the server loopback interface; the host Nginx terminates HTTPS and proxies to it.
+
+## Deploy to production
+
+The complete production workflow is one command:
+
+```sh
+make deploy
+```
+
+It installs from the lockfile using the local npm cache when possible, runs lint and the full exported-site test suite, creates a versioned release, transfers it over `ssh cosa`, builds the Nginx image on the server, replaces the production container, validates public routes and legacy redirects, and reloads the host Nginx configuration. If activation fails, the remote script restores the previous container image and Nginx configuration.
+
+Useful operational commands:
+
+```sh
+make status
+make logs
+```
+
+Versioned releases are stored under `/opt/benincosa-armchair/releases/`, and `/opt/benincosa-armchair/current` points to the active release.
