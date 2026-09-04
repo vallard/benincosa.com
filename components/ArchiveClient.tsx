@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { formatDate, sectionFromSlug, sections, sectionSlugs, type Section } from "@/lib/posts";
+import { formatDate, sectionFromSlug, sections, sectionSlugs, type Section } from "@/lib/post-types";
 
 export type ArchivePost = {
   id: number;

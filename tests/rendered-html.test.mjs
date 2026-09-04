@@ -13,8 +13,20 @@ test("exports the finished editorial homepage", async () => {
   assert.match(html, /BENINCOSA/);
   assert.match(html, /Armchair Notes/);
   assert.match(html, /California Housing Market/);
+  assert.match(html, /A draft about California housing/);
   assert.match(html, /Recent armchair notes/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
+});
+
+test("keeps Markdown drafts out of production", async () => {
+  const draft = await readFile(
+    new URL("../content/notes/california-housing-market-is-a-ponzi-scheme.md", import.meta.url),
+    "utf8",
+  );
+  assert.match(draft, /draft: true/);
+  await assert.rejects(
+    access(new URL("../out/notes/california-housing-market-is-a-ponzi-scheme/index.html", import.meta.url)),
+  );
 });
 
 test("exports the real archive and every imported article", async () => {

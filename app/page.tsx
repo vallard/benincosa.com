@@ -2,7 +2,15 @@ import type { Metadata } from "next";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { StoryCard } from "@/components/StoryCard";
-import { findPost, posts, sections, sectionSlugs, type Post } from "@/lib/posts";
+import {
+  featuredNote,
+  findPost,
+  formatDate,
+  posts,
+  sections,
+  sectionSlugs,
+  type Post,
+} from "@/lib/posts";
 
 export const metadata: Metadata = {
   title: "Benincosa — Armchair Notes",
@@ -24,18 +32,21 @@ export default function Home() {
         <section className="feature shell" aria-labelledby="feature-title">
           <div className="feature-copy">
             <p className="feature-kicker">
-              <span aria-hidden="true" /> Society &amp; Place · Coming next
+              <span aria-hidden="true" /> {featuredNote.section} · {featuredNote.draft ? "Coming next" : formatDate(featuredNote.date, "short")}
             </p>
-            <h1 id="feature-title">The California Housing Market Is a Ponzi Scheme</h1>
+            <h1 id="feature-title">{featuredNote.title}</h1>
             <p className="feature-deck">
-              California’s political and financial system depends on each new buyer paying
-              more to protect everyone who came before.
+              {featuredNote.excerpt}
             </p>
-            <p className="feature-status">An argument in progress</p>
+            {featuredNote.draft ? (
+              <p className="feature-status">{featuredNote.status}</p>
+            ) : (
+              <a className="feature-status" href={`/notes/${featuredNote.slug}/`}>Read the featured note →</a>
+            )}
           </div>
           <aside className="feature-aside" aria-label="Issue and author note">
-            <p className="issue-number">01</p>
-            <p className="issue-description">An argument about place, scarcity &amp; belief</p>
+            <p className="issue-number">{featuredNote.issue}</p>
+            <p className="issue-description">{featuredNote.description}</p>
             <div className="why-i-write">
               <p className="eyebrow">Why I write</p>
               <p>I build systems, raise humans, and write down what I learn.</p>

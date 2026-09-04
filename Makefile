@@ -2,13 +2,15 @@ SHELL := /bin/bash
 .DEFAULT_GOAL := help
 NPM_CI := npm ci --prefer-offline --no-audit --no-fund
 
-.PHONY: help dev build check deploy status logs
+.PHONY: help dev build check new-post edit-post deploy status logs
 
 help:
 	@printf '%s\n' \
 		'make dev      Start the local Next.js development server' \
 		'make build    Install dependencies and build the static site' \
 		'make check    Run lint, build, and the exported-site tests' \
+		'make new-post SLUG=my-post TITLE="My Post"' \
+		'make edit-post SLUG=existing-post-slug' \
 		'make deploy   Verify everything and deploy production over ssh cosa' \
 		'make status   Show the production container and public HTTP status' \
 		'make logs     Show the latest production container logs'
@@ -24,6 +26,12 @@ check:
 	$(NPM_CI)
 	npm run lint
 	npm test
+
+new-post:
+	@node scripts/new-post.mjs "$(SLUG)" "$(TITLE)"
+
+edit-post:
+	@node scripts/edit-post.mjs "$(SLUG)"
 
 deploy:
 	$(NPM_CI)

@@ -37,7 +37,38 @@ npm start
 
 ## Content
 
-`content/posts.json` contains all 263 posts imported from WordPress. The importer can be run on the WordPress server with:
+The 263 imported WordPress posts remain in `content/posts.json`. New writing and edited-post overrides live as individual Markdown files in `content/notes/`.
+
+### Write a new post
+
+```sh
+make new-post SLUG=my-new-post TITLE="My New Post"
+make dev
+```
+
+Open `http://localhost:3000/notes/my-new-post/` to preview it. New files start with `draft: true`; drafts are available during local development but are excluded from production builds, the archive, RSS, and the sitemap. Edit the Markdown, choose one of the three valid sections, replace the excerpt, and set `draft: false` when it is ready.
+
+To publish:
+
+```sh
+make deploy
+```
+
+### Edit an imported post
+
+Find the existing slug in its URL or the archive, then run:
+
+```sh
+make edit-post SLUG=jetson-nano-new-years-eve-ai-fun
+```
+
+This converts the imported HTML into a Markdown override with the same slug. It starts as a draft, so local development shows the edited version while production continues serving the original WordPress import. Set `draft: false` and deploy when the replacement is ready. Removing the override restores the imported version on the next build.
+
+The homepage feature is controlled by the one Markdown file with `featured: true`. The current housing draft is `content/notes/california-housing-market-is-a-ponzi-scheme.md`.
+
+### Re-import WordPress
+
+The importer can be run on the WordPress server with:
 
 ```sh
 wp eval-file scripts/export-wordpress.php > content/posts.json
