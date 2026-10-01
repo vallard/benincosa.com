@@ -102,6 +102,18 @@ if [[ "$public_archive" != *'Every armchair note since 2009'* ]]; then
   false
 fi
 
+p90x_listing=$(curl -fsS --retry 5 --retry-delay 1 https://benincosa.com/p90x/)
+if [[ "$p90x_listing" != *'p90x 01 - Chest &amp; Back.mp4'* ]]; then
+  echo "The legacy P90X directory is not available." >&2
+  false
+fi
+
+p90x3_listing=$(curl -fsS --retry 5 --retry-delay 1 https://benincosa.com/p90x3/)
+if [[ "$p90x3_listing" != *'P90X3-Accelerator.mp4'* ]]; then
+  echo "The legacy P90X3 directory is not available." >&2
+  false
+fi
+
 legacy_location=$(curl -fsSI 'https://benincosa.com/?p=3881' | tr -d '\r' | awk 'tolower($1) == "location:" { print $2 }')
 if [[ "$legacy_location" != /notes/* ]]; then
   echo "Legacy redirect validation failed: $legacy_location" >&2
